@@ -97,8 +97,54 @@ max_interval
 
 
 ## Imputing missing values
+```{r}
+NA_count <- sum(is.na(activity$steps))
+NA_count
 
+na_pos <- which(is.na(activity$steps))
+mean_vec <- rep(mean(activity$steps, na.rm=TRUE), times=length(na_pos))
+# Replace the NAs by the means
+activity[na_pos, "steps"] <- mean_vec
 
+sum_data <- aggregate(activity$steps, by=list(activity$date), FUN=sum)
 
+# Rename the attributes
+names(sum_data) <- c("date", "total")
+
+# Compute the histogram of the total number of steps each day
+hist(sum_data$total, 
+     breaks=seq(from=0, to=25000, by=2500),
+     col="orange", 
+     xlab="Total number of steps", 
+     ylim=c(0, 30), 
+     main="Histogram of the total number of steps taken each day")
+#mean
+mean(sum_data$total)
+
+#median
+median(sum_data$total)
+
+```
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+
+library(lattice)
+
+# Compute the average number of steps taken, averaged across all daytype variable
+mean_data <- aggregate(activity$steps, 
+                       by=list(activity$daytype, 
+                               activity$weekday, activity$interval), mean)
+
+# Rename the attributes
+names(mean_data) <- c("daytype", "weekday", "interval", "mean")
+
+xyplot(mean ~ interval | daytype, mean_data, 
+       type="l", 
+       lwd=1, 
+       xlab="Interval", 
+       ylab="Number of steps", 
+       layout=c(1,2))
+
+```
+
 

@@ -69,7 +69,29 @@ hist(sum_data$total,
 ## What is the average daily activity pattern?
 
 ```{r}
+mean_data <- aggregate(activity$steps, 
+                       by=list(activity$interval), 
+                       FUN=mean, 
+                       na.rm=TRUE)
 
+
+names(mean_data) <- c("interval", "mean")
+# Compute the time series plot
+plot(mean_data$interval, 
+     mean_data$mean, 
+     type="l", 
+     col="blue", 
+     lwd=2, 
+     xlab="Interval [minutes]", 
+     ylab="Average number of steps", 
+     main="Time-series of the average number of steps per intervals")
+
+# position of the maximum mean
+max_pos <- which(mean_data$mean == max(mean_data$mean))
+
+#value of interval at this position
+max_interval <- mean_data[max_pos, 1]
+max_interval
 
 ```
 
